@@ -3,7 +3,7 @@ import pandas as pd
 import argparse
 from isolates import list_of_isolates
 
-# # argparse block
+# argparse block
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", help="Input .csv file (incl path/to/file)", required=True)
 parser.add_argument("-o", "--output", help="Output csv (i.e 'output.csv' and incl path/to/file)", required=True)
@@ -20,14 +20,11 @@ for i in df["Names"]:
 # Replace the values in the "Names" column with the new values
 df["Names"] = df["Names"].replace(df["Names"].values, list_of_new_names)
 
-# merge df and list of isolates 
-df = pd.concat([df, pd.DataFrame(list_of_isolates, columns=["Test"])], axis=1)
+# convert list of isolates to df2
+df2 = pd.DataFrame(list_of_isolates, columns=["Names"])
 
-# copy new column to Names  
-df['Names'] = df['Test']
-
-# remove added column
-df.pop("Test")
+# merge the two dfs
+df = pd.merge(df, df2 , on="Names", how = "outer", sort=True)
 
 # convert missing values to 0
 df = df.fillna(0)
